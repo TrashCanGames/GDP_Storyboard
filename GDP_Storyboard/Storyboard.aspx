@@ -13,10 +13,13 @@
 </head>
 <body>
     <div id="MenuBar" runat="server">
-        <select>
+        <select id="sb_selector" class="menubtns">
             <option>StoryboardName1</option>
             <option>StoryboardName2</option>
         </select>
+            <div id="save-default" class="link-btn menubtns">Set As Default</div>
+            <i class="fa fa-plus menubtns"></i>
+            <i class="fa fa-trash menubtns"></i>
     </div>
     <form id="sb_form" runat="server">
         <div>

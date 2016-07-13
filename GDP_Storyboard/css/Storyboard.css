@@ -9,6 +9,54 @@ body {
     background-color: #2d2d30;
 }
 
+#MenuBar {
+    padding:10px;
+}
+
+#MenuBar i {
+    font-size:24px;
+    color:#c7c7c7;
+    padding:3px;
+}
+
+#MenuBar i:first-of-type:hover {
+    color:limegreen;
+}
+
+#MenuBar i:last-of-type:hover {
+    color:rgb(224,78,78);
+}
+
+.select2 {
+    float:left !important;
+}
+
+#save-default {
+    display:block;
+    background-color:white;
+    color:#444;
+    height:30px;
+    width:100px;
+    line-height:30px;
+    text-align:center;
+    border-radius:3px;
+}
+
+#save-default:hover{
+    background-color:#007acc;
+    color:white;
+}
+
+.menubtns {
+    position:relative;
+    float:left;
+    margin-left:15px;
+}
+
+.menubtns:hover {
+    cursor:pointer;
+}
+
 .storyboard {
     position: absolute;
     top: 50px;
@@ -60,26 +108,46 @@ body {
     position:absolute;
     top:3px;
     left:15px;
-    color:white;
+    color:#c7c7c7;
+}
+
+.move:hover {
+    color:#2d2d30;
+    cursor:move;
 }
 
 .add {
     position:absolute;
     top:3px;
     left:35px;
-    color:white;
+    color:#c7c7c7;
+}
+
+.add:hover {
+    color:limegreen;
+    cursor:pointer;
 }
 
 .delete {
     position:absolute;
     top:3px;
     left:53px;
-    color:white;
+    color:#c7c7c7;
+}
+
+.delete:hover {
+    color:rgb(224,78,78);
+    cursor:pointer;
 }
 
 .edit {
     position:absolute;
     top:4px;
     left:35px;
+    color:#c7c7c7;
+}
+
+.edit:hover {
     color:white;
+    cursor:pointer;
 }

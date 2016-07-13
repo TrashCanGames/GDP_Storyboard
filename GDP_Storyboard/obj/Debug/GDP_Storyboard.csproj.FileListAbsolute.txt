@@ -41,3 +41,23 @@ D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Stor
 D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.dll
 D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.pdb
 C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.csprojResolveAssemblyReference.cache
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\csc.exe
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\vbc.exe
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\roslyn\VBCSCompiler.exe
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\GDP_Storyboard.dll.config
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\GDP_Storyboard.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\GDP_Storyboard.pdb
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\MySql.Data.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.dll
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.pdb

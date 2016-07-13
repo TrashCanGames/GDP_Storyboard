@@ -1,8 +1,9 @@
 ﻿* {
     margin: 0px;
     padding: 0px;
-    font-size:13px;
-    font-weight:100;
+    font-size: 13px;
+    font-weight: 100;
+    font-family: sans-serif;
 }
 
 body {
@@ -10,51 +11,60 @@ body {
 }
 
 #MenuBar {
-    padding:10px;
+    padding: 10px;
 }
 
-#MenuBar i {
-    font-size:24px;
-    color:#c7c7c7;
-    padding:3px;
-}
+    #MenuBar i {
+        font-size: 24px;
+        color: #c7c7c7;
+        padding: 3px;
+    }
 
-#MenuBar i:first-of-type:hover {
-    color:limegreen;
-}
+        #MenuBar i:first-of-type:hover {
+            color: limegreen;
+        }
 
-#MenuBar i:last-of-type:hover {
-    color:rgb(224,78,78);
-}
+        #MenuBar i:last-of-type:hover {
+            color: rgb(224,78,78);
+        }
 
 .select2 {
-    float:left !important;
+    float: left !important;
+    width: 200px !important;
 }
 
 #save-default {
-    display:block;
-    background-color:white;
-    color:#444;
-    height:30px;
-    width:100px;
-    line-height:30px;
-    text-align:center;
-    border-radius:3px;
+    display: block;
+    background-color: white;
+    color: #444;
+    height: 30px;
+    width: 100px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 3px;
 }
 
-#save-default:hover{
-    background-color:#007acc;
-    color:white;
-}
+    #save-default:hover {
+        background-color: #007acc;
+        color: white;
+    }
 
 .menubtns {
-    position:relative;
-    float:left;
-    margin-left:15px;
+    position: relative;
+    float: left;
+    margin-left: 15px;
 }
 
-.menubtns:hover {
-    cursor:pointer;
+    .menubtns:hover {
+        cursor: pointer;
+    }
+
+#sbname {
+    position: relative;
+    float: right;
+    color: white;
+    font-size: 24px;
+    margin-right: 20px;
 }
 
 .storyboard {
@@ -105,49 +115,49 @@ body {
 }
 
 .move {
-    position:absolute;
-    top:3px;
-    left:15px;
-    color:#c7c7c7;
+    position: absolute;
+    top: 3px;
+    left: 15px;
+    color: #c7c7c7;
 }
 
-.move:hover {
-    color:#2d2d30;
-    cursor:move;
-}
+    .move:hover {
+        color: #2d2d30;
+        cursor: move;
+    }
 
 .add {
-    position:absolute;
-    top:3px;
-    left:35px;
-    color:#c7c7c7;
+    position: absolute;
+    top: 3px;
+    left: 35px;
+    color: #c7c7c7;
 }
 
-.add:hover {
-    color:limegreen;
-    cursor:pointer;
-}
+    .add:hover {
+        color: limegreen;
+        cursor: pointer;
+    }
 
 .delete {
-    position:absolute;
-    top:3px;
-    left:53px;
-    color:#c7c7c7;
+    position: absolute;
+    top: 3px;
+    left: 53px;
+    color: #c7c7c7;
 }
 
-.delete:hover {
-    color:rgb(224,78,78);
-    cursor:pointer;
-}
+    .delete:hover {
+        color: rgb(224,78,78);
+        cursor: pointer;
+    }
 
 .edit {
-    position:absolute;
-    top:4px;
-    left:35px;
-    color:#c7c7c7;
+    position: absolute;
+    top: 4px;
+    left: 35px;
+    color: #c7c7c7;
 }
 
-.edit:hover {
-    color:white;
-    cursor:pointer;
-}
+    .edit:hover {
+        color: white;
+        cursor: pointer;
+    }

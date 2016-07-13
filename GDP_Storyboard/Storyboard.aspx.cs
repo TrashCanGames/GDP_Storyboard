@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Configuration;
@@ -11,47 +8,75 @@ using System.Web.UI.HtmlControls;
 using System.Configuration;
 using System.Net;
 using context = System.Web.HttpContext;
+using System.Web.Services;
 
 namespace GDP_Storyboard
 {
-    public partial class Storyboard : System.Web.UI.Page
+    public partial class Storyboard : Page
     {
         public static string conString = WebConfigurationManager.ConnectionStrings["dbconString"].ConnectionString;
         private static String ErrorlineNo, Errormsg, ErrorLocation, extype, exurl, Frommail, ToMail, name, word, Sub, HostAdd, EmailHead, EmailSing;
+
+        protected void sb_selector_SelectedIndexChanged(object sender, EventArgs e)
+        {
+        }
+
         Timer hideError;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Get_DefaultSB();
+            Load_SB_List();
         }
 
-        protected void Get_DefaultSB()
+        protected void Load_SB_List()
         {
             //Globals
             int defaultSB = 0;
 
-            MySqlConnection GetDefaultConn = new MySqlConnection();
-            GetDefaultConn.ConnectionString = conString;
+            MySqlConnection GetSBList = new MySqlConnection();
+            GetSBList.ConnectionString = conString;
             try
             {
-                GetDefaultConn.Open();
+                GetSBList.Open();
 
-                string getDefault = string.Format("SELECT `sb_num` FROM storyboardinfo WHERE `sb_default` = '{0}'", 1);
+                string getList = string.Format("SELECT `sb_name`, `sb_default`, `sb_num` FROM storyboardinfo");
 
-                MySqlCommand get = new MySqlCommand(getDefault, GetDefaultConn);
-                MySqlDataReader getDef = get.ExecuteReader();
+                MySqlCommand get = new MySqlCommand(getList, GetSBList);
+                MySqlDataReader getSBList = get.ExecuteReader();
 
-                while (getDef.Read())
+                while (getSBList.Read())
                 {
-                    defaultSB = (int)getDef["sb_num"];
+                    if ((int)getSBList["sb_default"] == 0)
+                    {
+                        var name = getSBList["sb_name"].ToString();
+                        var num = getSBList["sb_num"].ToString();
+                        sb_selector.Items.Add(new ListItem(name, num));
+                    } else if ((int) getSBList["sb_default"] == 1)
+                    {
+                        defaultSB = (int)getSBList["sb_num"];
+                        var name = getSBList["sb_name"].ToString();
+                        var num = getSBList["sb_num"].ToString();
+                        sbname.InnerHtml = name;
+                        sb_selector.Items.Add(new ListItem(name, num));
+                    }
                 }
+                ListItem li = sb_selector.Items.FindByValue(defaultSB.ToString());
+                li.Selected = true;
             }
             catch (Exception ex)
             {
                 SendErrorTomail(ex);
                 ShowError();
             }
+            GetSBList.Close();
             Load_Storyboard(defaultSB);
+        }
+
+        [WebMethod]
+        public static void ReLoad_Storyboard(string value)
+        {
+            Storyboard thisone = new Storyboard();
+            thisone.Load_Storyboard(int.Parse(value));
         }
 
         protected void Load_Storyboard(int activeSB)
@@ -61,9 +86,9 @@ namespace GDP_Storyboard
             int currentShot = 0;
             int currentPanel = 0;
 
-            if (sb_form.InnerHtml != "")
+            if (container.InnerHtml != "")
             {
-                sb_form.InnerHtml = "";
+                container.InnerHtml = "";
             }
 
             //Create a new MysqlConnection
@@ -81,7 +106,7 @@ namespace GDP_Storyboard
                 sbMainUL.ID = activeSB.ToString();
                 sbMainUL.Attributes.Add("class", "storyboard");
                 sbMainUL.Attributes.Add("runat", "server");
-                sb_form.Controls.Add(sbMainUL);
+                container.Controls.Add(sbMainUL);
 
                 MySqlCommand cmd = new MySqlCommand(query1, con);
                 MySqlDataReader rd = cmd.ExecuteReader();
@@ -143,7 +168,7 @@ namespace GDP_Storyboard
                         sh.Controls.Add(pan);
                         sc.Controls.Add(sh);
 
-                        HtmlGenericControl a = (HtmlGenericControl)sb_form.FindControl(activeSB.ToString());
+                        HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB.ToString());
                         a.Controls.Add(sc);
 
                         currentScene++;
@@ -190,7 +215,7 @@ namespace GDP_Storyboard
                         pan.Controls.Add(img);
                         sh.Controls.Add(pan);
 
-                        HtmlGenericControl a = (HtmlGenericControl)sb_form.FindControl(activeSB + "_" + rd["scene_num"].ToString());
+                        HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB + "_" + rd["scene_num"].ToString());
                         a.Controls.Add(sh);
 
                         currentShot++;
@@ -219,7 +244,7 @@ namespace GDP_Storyboard
 
                         pan.Controls.Add(img);
 
-                        HtmlGenericControl a = (HtmlGenericControl)sb_form.FindControl(activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString());
+                        HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString());
                         a.Controls.Add(pan);
 
                         currentPanel++;
@@ -241,16 +266,16 @@ namespace GDP_Storyboard
             errorMsgA.InnerHtml = "There was an error saving the storyboard, please try saving again in a few minutes.";
             errorMsgA.Attributes.Add("style", "position: absolute; top: 0px; right: 0px; color: red; background-color:yellow;");
             errorMsgA.Attributes.Add("runat", "server");
-            sb_form.Controls.Add(errorMsgA);
+            container.Controls.Add(errorMsgA);
             hideError = new Timer() { Interval = 5000, Enabled = true };
             hideError.Tick += (s, e) => Delete_Error();
         }
 
         protected void Delete_Error()
         {
-            HtmlGenericControl err = (HtmlGenericControl)sb_form.FindControl("error_message");
+            HtmlGenericControl err = (HtmlGenericControl)container.FindControl("error_message");
             hideError.Enabled = false;
-            sb_form.Controls.Remove(err);
+            container.Controls.Remove(err);
         }
 
         public static void SendErrorTomail(Exception exmail)

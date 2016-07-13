@@ -40,3 +40,4 @@ D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Stor
 D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.csprojResolveAssemblyReference.cache
 D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.dll
 D:\OneDrive\Shared favorites\Visual Studio 2015\Projects\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.pdb
+C:\Users\acordova\Desktop\TrashCanGames\Websites\Storyboard Creator\GDP_Storyboard\GDP_Storyboard\obj\Debug\GDP_Storyboard.csprojResolveAssemblyReference.cache

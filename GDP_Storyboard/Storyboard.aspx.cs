@@ -9,6 +9,10 @@ using System.Configuration;
 using System.Net;
 using context = System.Web.HttpContext;
 using System.Web.Services;
+using Newtonsoft.Json;
+using System.Web.Script.Services;
+using System.Collections.Generic;
+using System.Web.Script.Serialization;
 
 namespace GDP_Storyboard
 {
@@ -17,11 +21,7 @@ namespace GDP_Storyboard
         public static string conString = WebConfigurationManager.ConnectionStrings["dbconString"].ConnectionString;
         private static String ErrorlineNo, Errormsg, ErrorLocation, extype, exurl, Frommail, ToMail, name, word, Sub, HostAdd, EmailHead, EmailSing;
 
-        protected void sb_selector_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        Timer hideError;
+        //Timer hideError;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -66,30 +66,45 @@ namespace GDP_Storyboard
             catch (Exception ex)
             {
                 SendErrorTomail(ex);
-                ShowError();
+                //ShowError();
             }
             GetSBList.Close();
-            Load_Storyboard(defaultSB);
         }
 
         [WebMethod]
-        public static void ReLoad_Storyboard(string value)
+        public static void Set_Default(string value)
         {
-            Storyboard thisone = new Storyboard();
-            thisone.Load_Storyboard(int.Parse(value));
+            int setID = int.Parse(value);
+            //Create a new MysqlConnection
+            MySqlConnection con = new MySqlConnection();
+            con.ConnectionString = conString;
+
+            try
+            {
+                con.Open();
+
+                //Get default storyboard number query string
+                string query1 = string.Format("UPDATE storyboardinfo SET `sb_default` = '{0}' WHERE `sb_default` = '{1}'; UPDATE storyboardinfo SET `sb_default` = '{2}' WHERE `sb_num` = '{3}';", 0, 1, 1, setID);
+
+                MySqlCommand cmd = new MySqlCommand(query1, con);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                SendErrorTomail(ex);
+            }
+            con.Close();
         }
 
-        protected void Load_Storyboard(int activeSB)
+        [WebMethod]
+        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public static string Load_Storyboard(string value)
         {
             //Global variables
             int currentScene = 0;
             int currentShot = 0;
             int currentPanel = 0;
-
-            if (container.InnerHtml != "")
-            {
-                container.InnerHtml = "";
-            }
+            List<Scene> Scenes = new List<Scene>();
 
             //Create a new MysqlConnection
             MySqlConnection con = new MySqlConnection();
@@ -100,13 +115,13 @@ namespace GDP_Storyboard
                 con.Open();
 
                 //Get default storyboard number query string
-                string query1 = string.Format("SELECT `scene_num`, `shot_num`, `panel_num`, `img_data` FROM storyboards WHERE `sb_id` = '{0}' ORDER BY `scene_num`, `shot_num`, `panel_num`", activeSB);
+                string query1 = string.Format("SELECT `scene_num`, `shot_num`, `panel_num`, `img_data` FROM storyboards WHERE `sb_id` = '{0}' ORDER BY `scene_num`, `shot_num`, `panel_num`", int.Parse(value));
 
-                HtmlGenericControl sbMainUL = new HtmlGenericControl("ul");
-                sbMainUL.ID = activeSB.ToString();
-                sbMainUL.Attributes.Add("class", "storyboard");
-                sbMainUL.Attributes.Add("runat", "server");
-                container.Controls.Add(sbMainUL);
+                //HtmlGenericControl sbMainUL = new HtmlGenericControl("ul");
+                //sbMainUL.ID = activeSB.ToString();
+                //sbMainUL.Attributes.Add("class", "storyboard");
+                //sbMainUL.Attributes.Add("runat", "server");
+                //container.Controls.Add(sbMainUL);
 
                 MySqlCommand cmd = new MySqlCommand(query1, con);
                 MySqlDataReader rd = cmd.ExecuteReader();
@@ -117,59 +132,78 @@ namespace GDP_Storyboard
                     {
                         currentPanel = 0;
                         currentShot = 0;
-                        HtmlGenericControl img = new HtmlGenericControl("IMG");
-                        img.Attributes.Add("class", "image");
-                        img.Attributes.Add("runat", "server");
-                        img.Attributes.Add("src", rd["img_data"].ToString());
 
-                        HtmlGenericControl pan = new HtmlGenericControl("li");
-                        pan.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
-                        pan.Attributes.Add("class", "panel");
-                        pan.Attributes.Add("runat", "server");
-                        HtmlGenericControl movepan = new HtmlGenericControl("i");
-                        movepan.Attributes.Add("class", "fa fa-arrows move");
-                        HtmlGenericControl editpan = new HtmlGenericControl("i");
-                        editpan.Attributes.Add("class", "fa fa-pencil-square-o edit");
-                        HtmlGenericControl delpan1 = new HtmlGenericControl("i");
-                        delpan1.Attributes.Add("class", "fa fa-trash delete");
-                        pan.Controls.Add(movepan);
-                        pan.Controls.Add(editpan);
-                        pan.Controls.Add(delpan1);
+                        //Create a panel
+                        Panel thepanel = new Panel();
+                        thepanel.ID = value + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
+                        thepanel.src = rd["img_data"].ToString();
 
-                        HtmlGenericControl sh = new HtmlGenericControl("ul");
-                        sh.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString();
-                        sh.Attributes.Add("class", "shot");
-                        sh.Attributes.Add("runat", "server");
-                        HtmlGenericControl movesh = new HtmlGenericControl("i");
-                        movesh.Attributes.Add("class", "fa fa-arrows move");
-                        HtmlGenericControl addpan = new HtmlGenericControl("i");
-                        addpan.Attributes.Add("class", "fa fa-plus add");
-                        HtmlGenericControl delpan = new HtmlGenericControl("i");
-                        delpan.Attributes.Add("class", "fa fa-trash delete");
-                        sh.Controls.Add(movesh);
-                        sh.Controls.Add(addpan);
-                        sh.Controls.Add(delpan);
+                        //Create a shot and attach panel
+                        Shot theshot = new Shot();
+                        theshot.ID = value + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString();
+                        theshot.panels = new List<Panel>();
+                        theshot.panels.Add(thepanel);
 
-                        HtmlGenericControl sc = new HtmlGenericControl("li");
-                        sc.ID = activeSB + "_" + rd["scene_num"].ToString();
-                        sc.Attributes.Add("class", "scene");
-                        sc.Attributes.Add("runat", "server");
-                        HtmlGenericControl movesc = new HtmlGenericControl("i");
-                        movesc.Attributes.Add("class", "fa fa-arrows move");
-                        HtmlGenericControl addsh = new HtmlGenericControl("i");
-                        addsh.Attributes.Add("class", "fa fa-plus add");
-                        HtmlGenericControl delsh = new HtmlGenericControl("i");
-                        delsh.Attributes.Add("class", "fa fa-trash delete");
-                        sc.Controls.Add(movesc);
-                        sc.Controls.Add(addsh);
-                        sc.Controls.Add(delsh);
+                        //Create a scene and attach shot
+                        Scene thescene = new Scene();
+                        thescene.ID = value + "_" + rd["scene_num"].ToString();
+                        thescene.shots = new List<Shot>();
+                        thescene.shots.Add(theshot);
 
-                        pan.Controls.Add(img);
-                        sh.Controls.Add(pan);
-                        sc.Controls.Add(sh);
+                        //HtmlGenericControl img = new HtmlGenericControl("IMG");
+                        //img.Attributes.Add("class", "image");
+                        //img.Attributes.Add("runat", "server");
+                        //img.Attributes.Add("src", rd["img_data"].ToString());
 
-                        HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB.ToString());
-                        a.Controls.Add(sc);
+                        //HtmlGenericControl pan = new HtmlGenericControl("li");
+                        //pan.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
+                        //pan.Attributes.Add("class", "panel");
+                        //pan.Attributes.Add("runat", "server");
+                        //HtmlGenericControl movepan = new HtmlGenericControl("i");
+                        //movepan.Attributes.Add("class", "fa fa-arrows move");
+                        //HtmlGenericControl editpan = new HtmlGenericControl("i");
+                        //editpan.Attributes.Add("class", "fa fa-pencil-square-o edit");
+                        //HtmlGenericControl delpan1 = new HtmlGenericControl("i");
+                        //delpan1.Attributes.Add("class", "fa fa-trash delete");
+                        //pan.Controls.Add(movepan);
+                        //pan.Controls.Add(editpan);
+                        //pan.Controls.Add(delpan1);
+
+                        //HtmlGenericControl sh = new HtmlGenericControl("ul");
+                        //sh.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString();
+                        //sh.Attributes.Add("class", "shot");
+                        //sh.Attributes.Add("runat", "server");
+                        //HtmlGenericControl movesh = new HtmlGenericControl("i");
+                        //movesh.Attributes.Add("class", "fa fa-arrows move");
+                        //HtmlGenericControl addpan = new HtmlGenericControl("i");
+                        //addpan.Attributes.Add("class", "fa fa-plus add");
+                        //HtmlGenericControl delpan = new HtmlGenericControl("i");
+                        //delpan.Attributes.Add("class", "fa fa-trash delete");
+                        //sh.Controls.Add(movesh);
+                        //sh.Controls.Add(addpan);
+                        //sh.Controls.Add(delpan);
+
+                        //HtmlGenericControl sc = new HtmlGenericControl("li");
+                        //sc.ID = activeSB + "_" + rd["scene_num"].ToString();
+                        //sc.Attributes.Add("class", "scene");
+                        //sc.Attributes.Add("runat", "server");
+                        //HtmlGenericControl movesc = new HtmlGenericControl("i");
+                        //movesc.Attributes.Add("class", "fa fa-arrows move");
+                        //HtmlGenericControl addsh = new HtmlGenericControl("i");
+                        //addsh.Attributes.Add("class", "fa fa-plus add");
+                        //HtmlGenericControl delsh = new HtmlGenericControl("i");
+                        //delsh.Attributes.Add("class", "fa fa-trash delete");
+                        //sc.Controls.Add(movesc);
+                        //sc.Controls.Add(addsh);
+                        //sc.Controls.Add(delsh);
+
+                        //pan.Controls.Add(img);
+                        //sh.Controls.Add(pan);
+                        //sc.Controls.Add(sh);
+
+                        //HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB.ToString());
+                        //a.Controls.Add(sc);
+                        Scenes.Add(thescene);
 
                         currentScene++;
                         currentShot++;
@@ -179,73 +213,91 @@ namespace GDP_Storyboard
                     {
                         currentPanel = 0;
 
-                        HtmlGenericControl img = new HtmlGenericControl("IMG");
-                        img.Attributes.Add("class", "image");
-                        img.Attributes.Add("runat", "server");
-                        img.Attributes.Add("src", rd["img_data"].ToString());
+                        //Create a panel
+                        Panel thepanel = new Panel();
+                        thepanel.ID = value + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
+                        thepanel.src = rd["img_data"].ToString();
 
-                        HtmlGenericControl pan = new HtmlGenericControl("li");
-                        pan.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
-                        pan.Attributes.Add("class", "panel");
-                        pan.Attributes.Add("runat", "server");
-                        HtmlGenericControl movepan = new HtmlGenericControl("i");
-                        movepan.Attributes.Add("class", "fa fa-arrows move");
-                        HtmlGenericControl editpan = new HtmlGenericControl("i");
-                        editpan.Attributes.Add("class", "fa fa-pencil-square-o edit");
-                        HtmlGenericControl delpan1 = new HtmlGenericControl("i");
-                        delpan1.Attributes.Add("class", "fa fa-trash delete");
-                        pan.Controls.Add(movepan);
-                        pan.Controls.Add(editpan);
-                        pan.Controls.Add(delpan1);
+                        //Create a shot and attach panel
+                        Shot theshot = new Shot();
+                        theshot.ID = value + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString();
+                        theshot.panels = new List<Panel>();
+                        theshot.panels.Add(thepanel);
 
-                        HtmlGenericControl sh = new HtmlGenericControl("ul");
-                        sh.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString();
-                        sh.Attributes.Add("class", "shot");
-                        sh.Attributes.Add("runat", "server");
-                        HtmlGenericControl movesh = new HtmlGenericControl("i");
-                        movesh.Attributes.Add("class", "fa fa-arrows move");
-                        HtmlGenericControl addpan = new HtmlGenericControl("i");
-                        addpan.Attributes.Add("class", "fa fa-plus add");
-                        HtmlGenericControl delpan = new HtmlGenericControl("i");
-                        delpan.Attributes.Add("class", "fa fa-trash delete");
-                        sh.Controls.Add(movesh);
-                        sh.Controls.Add(addpan);
-                        sh.Controls.Add(delpan);
+                        //HtmlGenericControl img = new HtmlGenericControl("IMG");
+                        //img.Attributes.Add("class", "image");
+                        //img.Attributes.Add("runat", "server");
+                        //img.Attributes.Add("src", rd["img_data"].ToString());
 
-                        pan.Controls.Add(img);
-                        sh.Controls.Add(pan);
+                        //HtmlGenericControl pan = new HtmlGenericControl("li");
+                        //pan.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
+                        //pan.Attributes.Add("class", "panel");
+                        //pan.Attributes.Add("runat", "server");
+                        //HtmlGenericControl movepan = new HtmlGenericControl("i");
+                        //movepan.Attributes.Add("class", "fa fa-arrows move");
+                        //HtmlGenericControl editpan = new HtmlGenericControl("i");
+                        //editpan.Attributes.Add("class", "fa fa-pencil-square-o edit");
+                        //HtmlGenericControl delpan1 = new HtmlGenericControl("i");
+                        //delpan1.Attributes.Add("class", "fa fa-trash delete");
+                        //pan.Controls.Add(movepan);
+                        //pan.Controls.Add(editpan);
+                        //pan.Controls.Add(delpan1);
 
-                        HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB + "_" + rd["scene_num"].ToString());
-                        a.Controls.Add(sh);
+                        //HtmlGenericControl sh = new HtmlGenericControl("ul");
+                        //sh.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString();
+                        //sh.Attributes.Add("class", "shot");
+                        //sh.Attributes.Add("runat", "server");
+                        //HtmlGenericControl movesh = new HtmlGenericControl("i");
+                        //movesh.Attributes.Add("class", "fa fa-arrows move");
+                        //HtmlGenericControl addpan = new HtmlGenericControl("i");
+                        //addpan.Attributes.Add("class", "fa fa-plus add");
+                        //HtmlGenericControl delpan = new HtmlGenericControl("i");
+                        //delpan.Attributes.Add("class", "fa fa-trash delete");
+                        //sh.Controls.Add(movesh);
+                        //sh.Controls.Add(addpan);
+                        //sh.Controls.Add(delpan);
+
+                        //pan.Controls.Add(img);
+                        //sh.Controls.Add(pan);
+
+                        //HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB + "_" + rd["scene_num"].ToString());
+                        //a.Controls.Add(sh);
+                        Scenes[currentScene - 1].shots.Add(theshot);
 
                         currentShot++;
                         currentPanel++;
 
                     } else if ((int)rd["panel_num"] != currentPanel)
                     {
-                        HtmlGenericControl img = new HtmlGenericControl("IMG");
-                        img.Attributes.Add("class", "image");
-                        img.Attributes.Add("runat", "server");
-                        img.Attributes.Add("src", rd["img_data"].ToString());
+                        //Create a panel
+                        Panel thepanel = new Panel();
+                        thepanel.ID = value + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
+                        thepanel.src = rd["img_data"].ToString();
 
-                        HtmlGenericControl pan = new HtmlGenericControl("li");
-                        pan.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
-                        pan.Attributes.Add("class", "panel");
-                        pan.Attributes.Add("runat", "server");
-                        HtmlGenericControl movepan = new HtmlGenericControl("i");
-                        movepan.Attributes.Add("class", "fa fa-arrows move");
-                        HtmlGenericControl editpan = new HtmlGenericControl("i");
-                        editpan.Attributes.Add("class", "fa fa-pencil-square-o edit");
-                        HtmlGenericControl delpan1 = new HtmlGenericControl("i");
-                        delpan1.Attributes.Add("class", "fa fa-trash delete");
-                        pan.Controls.Add(movepan);
-                        pan.Controls.Add(editpan);
-                        pan.Controls.Add(delpan1);
+                        //HtmlGenericControl img = new HtmlGenericControl("IMG");
+                        //img.Attributes.Add("class", "image");
+                        //img.Attributes.Add("runat", "server");
+                        //img.Attributes.Add("src", rd["img_data"].ToString());
 
-                        pan.Controls.Add(img);
+                        //HtmlGenericControl pan = new HtmlGenericControl("li");
+                        //pan.ID = activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString() + "_" + rd["panel_num"].ToString();
+                        //pan.Attributes.Add("class", "panel");
+                        //pan.Attributes.Add("runat", "server");
+                        //HtmlGenericControl movepan = new HtmlGenericControl("i");
+                        //movepan.Attributes.Add("class", "fa fa-arrows move");
+                        //HtmlGenericControl editpan = new HtmlGenericControl("i");
+                        //editpan.Attributes.Add("class", "fa fa-pencil-square-o edit");
+                        //HtmlGenericControl delpan1 = new HtmlGenericControl("i");
+                        //delpan1.Attributes.Add("class", "fa fa-trash delete");
+                        //pan.Controls.Add(movepan);
+                        //pan.Controls.Add(editpan);
+                        //pan.Controls.Add(delpan1);
 
-                        HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString());
-                        a.Controls.Add(pan);
+                        //pan.Controls.Add(img);
+
+                        //HtmlGenericControl a = (HtmlGenericControl)container.FindControl(activeSB + "_" + rd["scene_num"].ToString() + "_" + rd["shot_num"].ToString());
+                        //a.Controls.Add(pan);
+                        Scenes[currentScene - 1].shots[currentShot - 1].panels.Add(thepanel);
 
                         currentPanel++;
                     }
@@ -254,29 +306,30 @@ namespace GDP_Storyboard
             catch (Exception ex)
             {
                 SendErrorTomail(ex);
-                ShowError();
             }
             con.Close();
+            var jss = new JavaScriptSerializer();
+            return jss.Serialize(Scenes);
         }
 
-        protected void ShowError()
-        {
-            HtmlGenericControl errorMsgA = new HtmlGenericControl("a");
-            errorMsgA.ID = "error_message";
-            errorMsgA.InnerHtml = "There was an error saving the storyboard, please try saving again in a few minutes.";
-            errorMsgA.Attributes.Add("style", "position: absolute; top: 0px; right: 0px; color: red; background-color:yellow;");
-            errorMsgA.Attributes.Add("runat", "server");
-            container.Controls.Add(errorMsgA);
-            hideError = new Timer() { Interval = 5000, Enabled = true };
-            hideError.Tick += (s, e) => Delete_Error();
-        }
+        //protected void ShowError()
+        //{
+        //    HtmlGenericControl errorMsgA = new HtmlGenericControl("a");
+        //    errorMsgA.ID = "error_message";
+        //    errorMsgA.InnerHtml = "There was an error saving the storyboard, please try saving again in a few minutes.";
+        //    errorMsgA.Attributes.Add("style", "position: absolute; top: 0px; right: 0px; color: red; background-color:yellow;");
+        //    errorMsgA.Attributes.Add("runat", "server");
+        //    container.Controls.Add(errorMsgA);
+        //    hideError = new Timer() { Interval = 5000, Enabled = true };
+        //    hideError.Tick += (s, e) => Delete_Error();
+        //}
 
-        protected void Delete_Error()
-        {
-            HtmlGenericControl err = (HtmlGenericControl)container.FindControl("error_message");
-            hideError.Enabled = false;
-            container.Controls.Remove(err);
-        }
+        //protected void Delete_Error()
+        //{
+        //    HtmlGenericControl err = (HtmlGenericControl)container.FindControl("error_message");
+        //    hideError.Enabled = false;
+        //    container.Controls.Remove(err);
+        //}
 
         public static void SendErrorTomail(Exception exmail)
         {
@@ -329,5 +382,23 @@ namespace GDP_Storyboard
 
             }
         }
+    }
+
+    public class Panel
+    {
+        public string ID { get; set; }
+        public string src { get; set; }
+    }
+
+    public class Shot
+    {
+        public string ID { get; set; }
+        public List<Panel> panels { get; set; }
+    }
+
+    public class Scene
+    {
+        public string ID { get; set; }
+        public List<Shot> shots { get; set; }
     }
 }

@@ -10,12 +10,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script src="https://use.fontawesome.com/d5b9c78a22.js"></script>
+    <script src="js/harmony.js"></script>
     <script src="js/storyboard.js"></script>
 </head>
 <body>
     <form id="sb_form" runat="server">
         <div id="MenuBar" runat="server">
-        <select id="sb_selector" class="menubtns" runat="server" onchange="Load_Storyboard(this.options[this.selectedIndex].value)">
+        <select id="sb_selector" class="menubtns" runat="server">
         </select>
         <div id="save-default" class="link-btn menubtns">Set As Default</div>
         <i class="fa fa-plus menubtns"></i>
@@ -25,8 +26,5 @@
         <div id="container" runat="server">
         </div>
     </form>
-    <script type="text/javascript">
-        $('select').select2();
-    </script>
 </body>
 </html>

@@ -655,24 +655,6 @@ function onMenuMouseOut() {
 function onMenuSave() {
     flatten();
     selectedElement.src = flattenCanvas.toDataURL("image/png");
-    //var selElmID = (selectedElement.id).substring((selected.id).lastIndexOf("_") + 1);
-    //var data = {"panelID": selElmID, "image_url": flattenCanvas.toDataURL("image/png")};
-
-    //$.ajax({
-    //    type: "POST",
-    //    url: "Storyboarding.aspx/Save_Artwork",
-    //    data: data,
-    //    contentType: 'application/json; charset=utf-8',
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) {
-    //        alert("Request: " + XMLHttpRequest.toString() + "\n\nStatus: " + textStatus + "\n\nError: " + errorThrown);
-    //    },
-    //    success: function (result) {
-    //        selectedElement = null;
-    //    }
-    //});
-
-    //selectedElement = null;
-    //window.open(flattenCanvas.toDataURL("image/png"), "mywindow")
 }
 function onMenuClear() {
     if (!confirm("Are you sure?")) {

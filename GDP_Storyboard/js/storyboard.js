@@ -275,8 +275,8 @@ function init_drags() {
     document.addEventListener("dragleave", dragLeave, false);
     document.addEventListener("drop", checkBlank, false);
     $(".edit").click(function (e) {
-        selectedElement = e.target.parentNode;
-        selectedElement = selectedElement.getElementsByTagName("IMG");
+        selectedParent = e.target.parentNode;
+        selectedElement = selectedParent.lastElementChild;
         openImage(selectedElement);
     });
     $(".delete").click(function (e) {

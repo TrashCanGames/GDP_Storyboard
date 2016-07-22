@@ -464,18 +464,18 @@ function init() {
     }
     container = document.createElement("div");
     container.id = "canvas_div";
-    container.setAttribute("style", "position:absolute; top:0px; left:0px; right:0px; bottom:0px; background: white;");
+    container.setAttribute("style", "position:absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.7);");
     document.body.appendChild(container);
     canvas = document.createElement("canvas");
-    canvas.width = SCREEN_WIDTH;
-    canvas.height = SCREEN_HEIGHT;
-    canvas.setAttribute("style", "border:1px solid #444; margin:0 auto; vertical-align:middle;")
+    canvas.width = 1280;
+    canvas.height = 720;
+    canvas.setAttribute("style", "border:1px solid #444; margin:0 auto; vertical-align:middle;");
     canvas.style.cursor = "crosshair";
     container.appendChild(canvas);
     context = canvas.getContext("2d");
     flattenCanvas = document.createElement("canvas");
-    flattenCanvas.width = SCREEN_WIDTH;
-    flattenCanvas.height = SCREEN_HEIGHT;
+    flattenCanvas.width = context.canvas.width; //SCREEN_WIDTH;
+    flattenCanvas.height = context.canvas.height; //SCREEN_HEIGHT;
     palette = new Palette();
     foregroundColorSelector = new ColorSelector(palette);
     foregroundColorSelector.addEventListener("change", onForegroundColorSelectorChange, false);

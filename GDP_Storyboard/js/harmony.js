@@ -1,44 +1,44 @@
 ﻿// From Harmony by Mrdoobs for canvas 
-        function circles(a) {
-            this.init(a)
+function circles(a) {
+    this.init(a)
 }
-        function pen(a) {
-            this.init(a)
+function pen(a) {
+    this.init(a)
 }
-    pen.prototype = {
-        context: null,
-        prevMouseX: null,
-        prevMouseY: null,
-        points: null,
-        count: null,
-        init: function (a) {
-            this.context = a;
-            this.context.globalCompositeOperation = "source-over";
-            this.points = new Array();
-            this.count = 0
-        },
-        destroy: function () {
-        },
-        strokeStart: function (b, a) {
-            this.prevMouseX = b;
-            this.prevMouseY = a
-        },
-        stroke: function (f, c) {
-            var e, b, a, g;
-            this.points.push([f, c]);
-            this.context.lineWidth = BRUSH_SIZE + 1;
-            this.context.strokeStyle = "rgba(" + COLOR[0] + ", " + COLOR[1] + ", " + COLOR[2] + ", " + 1 * BRUSH_PRESSURE + ")";
-            this.context.beginPath();
-            this.context.moveTo(this.prevMouseX, this.prevMouseY);
-            this.context.lineTo(f, c);
-            this.context.stroke();
-            this.prevMouseX = f;
-            this.prevMouseY = c;
-            this.count++
-        },
-        strokeEnd: function () {
-        }
-    };
+pen.prototype = {
+    context: null,
+    prevMouseX: null,
+    prevMouseY: null,
+    points: null,
+    count: null,
+    init: function (a) {
+        this.context = a;
+        this.context.globalCompositeOperation = "source-over";
+        this.points = new Array();
+        this.count = 0
+    },
+    destroy: function () {
+    },
+    strokeStart: function (b, a) {
+        this.prevMouseX = b;
+        this.prevMouseY = a
+    },
+    stroke: function (f, c) {
+        var e, b, a, g;
+        this.points.push([f, c]);
+        this.context.lineWidth = BRUSH_SIZE + 1;
+        this.context.strokeStyle = "rgba(" + COLOR[0] + ", " + COLOR[1] + ", " + COLOR[2] + ", " + 1 * BRUSH_PRESSURE + ")";
+        this.context.beginPath();
+        this.context.moveTo(this.prevMouseX, this.prevMouseY);
+        this.context.lineTo(f, c);
+        this.context.stroke();
+        this.prevMouseX = f;
+        this.prevMouseY = c;
+        this.count++
+    },
+    strokeEnd: function () {
+    }
+};
 function pencil(a) {
     this.init(a)
 }
@@ -427,32 +427,33 @@ Menu.prototype = {
 const REV = 6,
     BRUSHES = ["pencil", "pen"],
     USER_AGENT = navigator.userAgent.toLowerCase();
-var SCREEN_WIDTH = window.innerWidth,
-    SCREEN_HEIGHT = window.innerHeight,
-    BRUSH_SIZE = 1,
-    BRUSH_PRESSURE = 1,
-    COLOR = [0, 0, 0],
-    BACKGROUND_COLOR = [255, 255, 255],
-    STORAGE = window.localStorage,
-    brush,
-    saveTimeOut,
-    wacom,
-    i,
-    mouseX = 0,
-    mouseY = 0,
-    container,
-    foregroundColorSelector,
-    backgroundColorSelector,
-    menu,
-    canvas,
-    flattenCanvas,
-    context,
-    isFgColorSelectorVisible = false,
-    isBgColorSelectorVisible = false,
-    isAboutVisible = false,
-    isMenuMouseOver = false,
-    shiftKeyIsDown = false,
-    altKeyIsDown = false;
+var SCREEN_WIDTH = 1024; //window.innerWidth,
+SCREEN_HEIGHT = window.innerHeight,
+ASPECT_HEIGHT = Math.round(((SCREEN_WIDTH *= 1) / 16) * 9),
+BRUSH_SIZE = 1,
+BRUSH_PRESSURE = 1,
+COLOR = [0, 0, 0],
+BACKGROUND_COLOR = [255, 255, 255],
+STORAGE = window.localStorage,
+brush,
+saveTimeOut,
+wacom,
+i,
+mouseX = 0,
+mouseY = 0,
+container,
+foregroundColorSelector,
+backgroundColorSelector,
+menu,
+canvas,
+flattenCanvas,
+context,
+isFgColorSelectorVisible = false,
+isBgColorSelectorVisible = false,
+isAboutVisible = false,
+isMenuMouseOver = false,
+shiftKeyIsDown = false,
+altKeyIsDown = false;
 //init();
 function init() {
     var hash, palette, embed, localStorageImage;
@@ -464,18 +465,19 @@ function init() {
     }
     container = document.createElement("div");
     container.id = "canvas_div";
-    container.setAttribute("style", "position:absolute; top:0px; left:0px; right:0px; bottom:0px; background: white;");
+    container.setAttribute("style", "position:absolute; top:0px; left:0px; right:0px; bottom:0px; background: rgba(0,0,0,0.6);");
     document.body.appendChild(container);
     canvas = document.createElement("canvas");
+    canvas.id = "canvas_ctx";
     canvas.width = SCREEN_WIDTH;
-    canvas.height = SCREEN_HEIGHT;
-    canvas.setAttribute("style", "border:1px solid #444; margin:0 auto; vertical-align:middle;")
+    canvas.height = ASPECT_HEIGHT; //SCREEN_HEIGHT;
+    canvas.setAttribute("style", "border:1px solid #444; margin:0 auto; vertical-align:middle;");
     canvas.style.cursor = "crosshair";
     container.appendChild(canvas);
     context = canvas.getContext("2d");
     flattenCanvas = document.createElement("canvas");
     flattenCanvas.width = SCREEN_WIDTH;
-    flattenCanvas.height = SCREEN_HEIGHT;
+    flattenCanvas.height = ASPECT_HEIGHT; //SCREEN_HEIGHT;
     palette = new Palette();
     foregroundColorSelector = new ColorSelector(palette);
     foregroundColorSelector.addEventListener("change", onForegroundColorSelectorChange, false);
@@ -534,7 +536,7 @@ function init() {
         brush = eval("new " + BRUSHES[0] + "(context)")
     }
     window.addEventListener("mousemove", onWindowMouseMove, false);
-    window.addEventListener("resize", onWindowResize, false);
+    window.addEventListener("resize", resize, false);
     window.addEventListener("keydown", onWindowKeyDown, false);
     window.addEventListener("keyup", onWindowKeyUp, false);
     window.addEventListener("blur", onWindowBlur, false);
@@ -550,7 +552,7 @@ function onWindowMouseMove(a) {
 }
 function onWindowResize() {
     SCREEN_WIDTH = window.innerWidth;
-    SCREEN_HEIGHT = window.innerHeight;
+    ASPECT_HEIGHT = Math.round(((SCREEN_WIDTH *= 1) / 16) * 9);
     menu.container.style.left = ((SCREEN_WIDTH - menu.container.offsetWidth) / 2) + "px";
 }
 function onWindowKeyDown(a) {
@@ -628,14 +630,14 @@ function onMenuForegroundColor() {
     cleanPopUps();
     foregroundColorSelector.show();
     foregroundColorSelector.container.style.left = ((SCREEN_WIDTH - foregroundColorSelector.container.offsetWidth) / 2) + "px";
-    foregroundColorSelector.container.style.top = ((SCREEN_HEIGHT - foregroundColorSelector.container.offsetHeight) / 2) + "px";
+    foregroundColorSelector.container.style.top = ((ASPECT_HEIGHT - foregroundColorSelector.container.offsetHeight) / 2) + "px";
     isFgColorSelectorVisible = true
 }
 function onMenuBackgroundColor() {
     cleanPopUps();
     backgroundColorSelector.show();
     backgroundColorSelector.container.style.left = ((SCREEN_WIDTH - backgroundColorSelector.container.offsetWidth) / 2) + "px";
-    backgroundColorSelector.container.style.top = ((SCREEN_HEIGHT - backgroundColorSelector.container.offsetHeight) / 2) + "px";
+    backgroundColorSelector.container.style.top = ((ASPECT_HEIGHT - backgroundColorSelector.container.offsetHeight) / 2) + "px";
     isBgColorSelectorVisible = true
 }
 function onMenuSelectorChange() {
@@ -660,7 +662,7 @@ function onMenuClear() {
     if (!confirm("Are you sure?")) {
         return
     }
-    context.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    context.clearRect(0, 0, SCREEN_WIDTH, ASPECT_HEIGHT);
     saveToLocalStorage();
     brush.destroy();
     brush = eval("new " + BRUSHES[menu.selector.selectedIndex] + "(context)")
@@ -739,3 +741,22 @@ function cleanPopUps() {
         isBgColorSelectorVisible = false
     }
 };
+
+function resize() {
+
+    var canvas = document.getElementById('canvas_ctx');
+    var canvasRatio = canvas.height / canvas.width;
+    var windowRatio = window.innerHeight / window.innerWidth;
+
+    if (windowRatio < canvasRatio) {
+        SCREEN_HEIGHT = window.innerHeight;
+        ASPECT_HEIGHT = height / canvasRatio;
+    } else {
+        SCREEN_HEIGHT = window.innerWidth;
+        ASPECT_HEIGHT = width * canvasRatio;
+    }
+
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+};
+

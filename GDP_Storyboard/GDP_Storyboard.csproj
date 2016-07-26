@@ -86,6 +86,7 @@
     <Content Include="images\ui-icons_9ccdfc_256x240.png" />
     <Content Include="images\ui-icons_ffffff_256x240.png" />
     <Content Include="js\harmony.js" />
+    <Content Include="js\harmony101.js" />
     <Content Include="js\jquery-ui.min.js" />
     <Content Include="js\storyboard.js" />
     <Content Include="packages.config" />

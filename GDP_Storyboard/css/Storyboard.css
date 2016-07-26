@@ -111,7 +111,8 @@ body {
 .image {
     position: relative;
     float: left;
-    height: 270px;
+    height: 281px;
+    width: 500px;
 }
 
 .move {
@@ -238,4 +239,29 @@ hr {
     padding: 0px 8px;
     margin-left: 1px;
     background-color: #eee;
+}
+
+/* Test data */
+#canvas_bg {
+    position:absolute;
+    top:0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background-color:rgba(0,0,0,0.6);
+}
+
+#canvas {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background-color:white;
+}
+
+.menu_bg {
+    position:absolute;
+    height:1152px;
+    width:25px;
+    background-color:#3e3e42;
 }

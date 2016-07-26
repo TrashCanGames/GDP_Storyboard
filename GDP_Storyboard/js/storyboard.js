@@ -114,6 +114,7 @@ $(document).ready(function () {
     $('select').select2();
     $('select').change(function () {
         Load_Storyboard(this.options[this.selectedIndex].value);
+        $('#sbname').html(this.options[this.selectedIndex].text);
     });
     $('.menubtns').click(function (e) {
         if ($(e.target).hasClass("fa-plus")) {
@@ -265,7 +266,8 @@ function removeDrop(event) {
 
 function openImage(elm) {
     localStorage.canvas = elm.src;
-    init();
+    init_canvas();
+    //init();
 }
 
 function init_drags() {

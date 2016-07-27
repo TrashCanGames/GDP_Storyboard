@@ -21,6 +21,7 @@ function Create_Storyboard(jsonData) {
         scene.className = "scene";
         var movesc = document.createElement("i");
         movesc.className = "fa fa-arrows move";
+        movesc.setAttribute("draggable", "true");
         var addsh = document.createElement("i");
         addsh.className = "fa fa-plus add";
         var delsc = document.createElement("i");
@@ -36,6 +37,7 @@ function Create_Storyboard(jsonData) {
             shot.className = "shot";
             var movesh = document.createElement("i");
             movesh.className = "fa fa-arrows move";
+            movesh.setAttribute("draggable", "true");
             var addpan = document.createElement("i");
             addpan.className = "fa fa-plus add";
             var delsh = document.createElement("i");
@@ -54,6 +56,7 @@ function Create_Storyboard(jsonData) {
                 pan.className = "panel";
                 var movepan = document.createElement("i");
                 movepan.className = "fa fa-arrows move";
+                movepan.setAttribute("draggable", "true");
                 var editpan = document.createElement("i");
                 editpan.className = "fa fa-pencil-square-o edit";
                 var delpan = document.createElement("i");
@@ -84,6 +87,7 @@ function Load_Storyboard(sbnum) {
         success: function (msg) {
             Create_Storyboard(msg);
             $('.storyboard').attr("id", currentSB);
+            init_drags();
         },
         error: function (e) {
             alert("There was an error loading the storyboard. A message has been sent to support. Please try again later." + e.responseText);
@@ -140,11 +144,8 @@ var blankExists = false;
 var selectedElement;
 
 function dragStart(event) {
-    event.dataTransfer.setData("ID", event.target.parentNode.id);
-    event.dataTransfer.setData("Class", event.target.parentNode.className);
-    dragWidth = event.target.parentNode.offsetWidth;
-    dragHeight = event.target.parentNode.offsetHeight;
     sourceType = event.target.parentNode.className;
+    console.log(sourceType);
 
     if (sourceType == "panel") {
         droppableElms = document.getElementsByClassName("panel");
@@ -153,6 +154,11 @@ function dragStart(event) {
     } else if (sourceType == "scene") {
         droppableElms = document.getElementsByClassName("scene");
     }
+
+    event.dataTransfer.setData("ID", event.target.parentNode.id);
+    event.dataTransfer.setData("Class", event.target.parentNode.className);
+    dragWidth = event.target.parentNode.offsetWidth;
+    dragHeight = event.target.parentNode.offsetHeight;
 
     for (i = 0; i < droppableElms.length; i++) {
         if (droppableElms.item(i) == event.target.parentNode) {
@@ -215,7 +221,7 @@ function onDropsy(event) {
             order[i] = i;
         }
         return;
-    } 
+    }
 }
 
 function checkBlank(event) {
